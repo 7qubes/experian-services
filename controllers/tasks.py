@@ -176,19 +176,20 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 
 											if first_cell_text == 'Vertical height':
 												try:
-													second_cell = cells[1]
+													second_cell = cells[1].childNodes[1].nodeValue.strip()
 													# Get the second TextNode from the available Nodes, such that a dingle value or any range values
 													# will yield the first and lowest result, e.g. '50-60' should yield '50'
-													boot_aperture_height_text = second_cell.childNodes[1].nodeValue.strip()
-													regexp_pattern_boot_aperture_verticalheight = re.compile('(\d{2})')
-													regex_result_boot_aperture_verticalheight = regexp_pattern_boot_aperture_verticalheight.findall(boot_aperture_height_text)
-													logging.info('regex_result_boot_aperture_verticalheight')
-													logging.info(regex_result_boot_aperture_verticalheight)
-													logging.info('regex_result_boot_aperture_verticalheight[0]')
-													logging.info(regex_result_boot_aperture_verticalheight[0])
-													boot_aperture_verticalheight = float(regex_result_boot_aperture_verticalheight[0])
-													logging.info('boot_aperture_verticalheight')
-													logging.info(boot_aperture_verticalheight)
+													if second_cell != 'n / a to n / a':
+														boot_aperture_height_text = second_cell
+														regexp_pattern_boot_aperture_verticalheight = re.compile('(\d{2})')
+														regex_result_boot_aperture_verticalheight = regexp_pattern_boot_aperture_verticalheight.findall(boot_aperture_height_text)
+														logging.info('regex_result_boot_aperture_verticalheight')
+														logging.info(regex_result_boot_aperture_verticalheight)
+														logging.info('regex_result_boot_aperture_verticalheight[0]')
+														logging.info(regex_result_boot_aperture_verticalheight[0])
+														boot_aperture_verticalheight = float(regex_result_boot_aperture_verticalheight[0])
+														logging.info('boot_aperture_verticalheight')
+														logging.info(boot_aperture_verticalheight)
 												except Exception, e:
 													logging.exception('Aperture Vertical Height')
 													logging.exception(e)
