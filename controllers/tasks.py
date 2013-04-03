@@ -74,6 +74,8 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 						logging.info(vehicle_name)
 
 						vehicle_name_split = vehicle_name.split(' ')
+						logging.info('vehicle_name_split')
+						logging.info(vehicle_name_split)
 
 						make = vehicle_name_split[0]
 						logging.info(make)
