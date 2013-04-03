@@ -1,0 +1,4 @@
+cron:
+- description: Ricability Vehicle Collection
+  url: /cron/ricability-vehicle-collection
+  schedule: every monday 06:00

@@ -1,0 +1,8 @@
+queue:
+- name: vehiclecollection
+  rate: 5/m
+  bucket_size: 10
+  retry_parameters:
+      task_age_limit: 480s #8 minutes
+      min_backoff_seconds: 2
+      max_backoff_seconds: 10
