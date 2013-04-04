@@ -81,6 +81,8 @@ class MainHandler(utils.BaseHandler):
                             make = json_vehicle_data.get('MAKE').lower()
                             make = make.title()
                             logging.info(make)
+                        else:
+                            make = 'Ford'
 
                         # Get Model
                         model = None
@@ -90,6 +92,8 @@ class MainHandler(utils.BaseHandler):
                             # Now select the first word of the model, as we will use this to match our Datastore models
                             model = model.split(' ')[0]
                             logging.info(model)
+                        else:
+                            model = 'Fiesta'
 
                         # Get Year Of Manufacture
                         year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
@@ -97,13 +101,17 @@ class MainHandler(utils.BaseHandler):
 
                         # Get Door Plan Literal
                         door_plan_literal = ''
-                        door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
+                        door_plan_literal_string = None
+                        if json_vehicle_data.get('DOORPLANLITERAL') is not None:
+                            door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
+                        else:
+                            door_plan_literal_string = '5 DOOR HATCHBACK'
+                        
                         if door_plan_literal_string is not None:
                             door_plan_literal_string = door_plan_literal_string.lower()
                             door_plan_literal_string = door_plan_literal_string.title()
 
                         if door_plan_literal_string in models.dvla_door_plan_literal_inv:
-                            logging.info(door_plan_literal_string)
                             door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
 
                         logging.info(door_plan_literal)
