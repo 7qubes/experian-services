@@ -78,8 +78,7 @@ class MainHandler(utils.BaseHandler):
                         # Create a Vehicle dictionary                        
                         vehicle = dict()
                         json_vehicle_data = self.create_json_response(response.content)
-                        logging.info(json_vehicle_data)
-
+                        
                         # Add the DVLA vehicle data or error
                         vehicle['dvla'] = json_vehicle_data
                         
@@ -121,22 +120,23 @@ class MainHandler(utils.BaseHandler):
                                     year_of_manufacture=year_of_manufacture
                                 ))
 
-                                logging.info(query)
+                                
                                 # Add the DB Query data
                                 vehicle['datastore'] = query
                                 if query is not None:
                                     vehicle['datastore']['door_plan_literal_string'] = door_plan_literal_string
-                                # Set the response context data
-                                self.content = dict(data=vehicle)
+                                
                                 # Cache for longevity
-                                memcache.set(memcache_key, self.content)
+                                memcache.set(memcache_key, vehicle)
                             except Exception, e:
                                 # Add the DB Query error
                                 vehicle['datastore'] = str(e)
-                                # Set the response context data
-                                self.content = dict(data=vehicle)
                                 # Cache for a short period
-                                memcache.set(memcache_key, self.content, time=8000)
+                                memcache.set(memcache_key, vehicle, time=8000)        
+
+                        # Set the response context data
+                        self.content = dict(data=vehicle)
+                        
 
                     else:
                         raise Exception('Bad Experian Response')
