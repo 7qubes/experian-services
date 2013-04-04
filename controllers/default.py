@@ -187,10 +187,16 @@ class MainHandler(utils.BaseHandler):
             logging.info(sorted_vehicle_dims)
             
             # Sort Product dimensions in descending order
+            product_width = float(request_args.get('width'))
+            product_width = (product_width/100)*self.product_packaging
+            product_height = float(request_args.get('height'))
+            product_height = (product_height/100)*self.product_packaging
+            product_length = float(request_args.get('length'))
+            product_length = (product_length/100)*self.product_packaging
             product_dims = dict(
-                width=float(request_args.get('width'))/100*self.product_packaging,
-                height=float(request_args.get('height'))/100*self.product_packaging,
-                length=float(request_args.get('length'))/100*self.product_packaging
+                width=product_width,
+                height=product_height,
+                length=product_length
             )
 
             sorted_product_dims = sorted(product_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
