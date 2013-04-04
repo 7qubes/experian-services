@@ -144,6 +144,21 @@ class MainHandler(utils.BaseHandler):
 
     def create_json_response(self, xml_content):
         """
+
+        Failure:
+        <?xml version='1.0' standalone='yes'?>
+        <GEODS exp_cid='jmny'>
+            <REQUEST type='RETURN' subtype='CALLBUR' EXP_ExperianRef='' success='N' timestamp='Wed, 3 Apr 2013 at 6:10 PM' id='jmny'>
+                <MXE1>
+                    <CODE>0009</CODE>
+                    <LENGTH>029</LENGTH>
+                    <SEVERITY>4</SEVERITY>
+                    <MSG>VEHICLE NOT FOUND ON DATABASE</MSG>
+                </MXE1>
+            </REQUEST>
+        </GEODS>
+
+        Success:
         <?xml version='1.0' standalone='yes'?>
         <GEODS exp_cid='86sq'>
             <REQUEST type='RETURN' subtype='CALLBUR' EXP_ExperianRef='' success='Y' timestamp='Tue, 2 Apr 2013 at 1:40 PM' id='86sq'>

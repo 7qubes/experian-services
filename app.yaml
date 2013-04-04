@@ -26,7 +26,7 @@ handlers:
   secure: optional
 - url: .*
   script: main.app
-  secure: always
+  secure: optional
 
 libraries:
 - name: webapp2

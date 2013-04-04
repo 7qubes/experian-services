@@ -101,7 +101,12 @@ dvla_door_plan = {
   '47':'Mobile Plant',
   '48':'Car Transporter',
   '49':'Refuse Disposal',
-  '50':'Goods'
+  '50':'Goods',
+  '51':'Front Dumper',
+  '52':'Skip Loader',
+  '53':'Special Mobile Unit',
+  '54':'Light Utility 4x4',
+  '55':'Airport Support Unit'
 }
 
 dvla_door_plan_inv = dict((v,k) for k, v in dvla_door_plan.iteritems())
@@ -126,14 +131,7 @@ ricability_to_dvla_door_plan_inv = dict((v,k) for k, v in ricability_to_dvla_doo
 """
 
 
-51  Front Dumper  Front Dumper
-52  Skip Loader Skip Loader
-53  Special Mobile Unit (vehicle with permanently fixed equipment used for medical, dental, veterinary, health, educational, display or clerical purposes)
-  Special Mobile Unit
-54  Light Utility 4x4 (including other similar types of 4 wheel drive dual purpose vehicles)
-  Light Utility 4x4
-55  Airport Support Unit (vehicle primarily used on aerodromes for servicing, controlling, loading and unloading aircraft)
-  Airport Support Unit
+
   62 ='Tourer'
 96  MPV MPV
 72  Moped (to be used for vehicles registered after 31 July 1977) Moped
