@@ -154,7 +154,7 @@ class MainHandler(utils.BaseHandler):
     		logging.info(boot_minimum_width)
 
     		# Compare boot width with product width + 10%
-    		product_width = product_dimensions.get('width')
+    		product_width = request_args.get('width')
     		if product_width is not None:
     			product_width = float(product_width)
     			product_width_tenpercent = (product_width/100)*10
@@ -171,7 +171,7 @@ class MainHandler(utils.BaseHandler):
     				product_fit_score['width'] = 'no'
     		
     		# Compare boot height with product height + 10%
-    		product_height = product_dimensions.get('height')
+    		product_height = request_args.get('height')
     		if product_height is not None:
     			product_height = float(product_height)
     			product_height_tenpercent = (product_height/100)*10
@@ -188,7 +188,7 @@ class MainHandler(utils.BaseHandler):
     				product_fit_score['height'] = 'no'
 
 			# Compare boot height with product height + 10%
-			product_length = product_dimensions.get('length')
+			product_length = request_args.get('length')
 			if product_length is not None:
 				product_length = float(product_length)
 				product_length_tenpercent = (product_length/100)*10
