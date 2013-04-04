@@ -285,6 +285,8 @@ class MainHandler(utils.BaseHandler):
             root = etree.fromstring(xml_content)
             request = root.find('REQUEST')
             success = request.get('success')
+            logging.info('success')
+            logging.info(success)
             if success is not None and success == 'Y':
                 mb01 = root.find('REQUEST/MB01')
                 for item in mb01:
