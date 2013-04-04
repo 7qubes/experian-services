@@ -188,9 +188,9 @@ class MainHandler(utils.BaseHandler):
             
             # Sort Product dimensions in descending order
             product_dims = dict(
-                width=float((request_args.get('width')/100)*self.product_packaging),
-                height=float((request_args.get('height')/100)*self.product_packaging),
-                length=float((request_args.get('length')/100)*self.product_packaging)
+                width=float(request_args.get('width'))/100*self.product_packaging,
+                height=float(request_args.get('height'))/100*self.product_packaging,
+                length=float(request_args.get('length'))/100*self.product_packaging
             )
 
             sorted_product_dims = sorted(product_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
