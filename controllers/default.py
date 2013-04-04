@@ -187,7 +187,12 @@ class MainHandler(utils.BaseHandler):
             logging.info(sorted_vehicle_dims)
             
             # Sort Product dimensions in descending order
-            product_dims = dict(width=float(request_args.get('width')), height=float(request_args.get('height')), length=float(request_args.get('length')))
+            product_dims = dict(
+                width=float((request_args.get('width')/100)*self.product_packaging),
+                height=float((request_args.get('height')/100)*self.product_packaging),
+                length=float((request_args.get('length')/100)*self.product_packaging)
+            )
+            
             sorted_product_dims = sorted(product_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
             logging.info('sorted_product_dims')
             logging.info(sorted_product_dims)
@@ -205,45 +210,6 @@ class MainHandler(utils.BaseHandler):
                     logging.info('vehicle '+str(vehicle_dim[0])+' is less than product '+str(sorted_product_dims[counter][0]))
                 
                 counter=counter+1
-
-            # Compare boot width with product width + 10%
-            product_width = request_args.get('width')
-            if product_width is not None:
-                product_width = float(product_width)
-                product_width_tenpercent = (product_width/100)*self.product_packaging
-                product_width = product_width+product_width_tenpercent
-                if product_width < boot_minimum_width:
-                    product_fit_score['width'] = 'yes'
-                elif product_width == boot_minimum_width:
-                    product_fit_score['width'] = 'maybe'
-                elif product_width > boot_minimum_width:
-                    product_fit_score['width'] = 'no'
-    		
-    		# Compare boot height with product height + 10%
-    		product_height = request_args.get('height')
-    		if product_height is not None:
-    			product_height = float(product_height)
-    			product_height_tenpercent = (product_height/100)*self.product_packaging
-    			product_height = product_height+product_height_tenpercent
-    			if product_height < boot_aperture_verticalheight:
-    				product_fit_score['height'] = 'yes'
-    			elif product_height == boot_aperture_verticalheight:
-    				product_fit_score['height'] = 'maybe'
-    			elif product_height > boot_aperture_verticalheight:
-    				product_fit_score['height'] = 'no'
-
-			# Compare boot height with product height + 10%
-			product_length = request_args.get('length')
-			if product_length is not None:
-				product_length = float(product_length)
-				product_length_tenpercent = (product_length/100)*self.product_packaging
-				product_length = product_length+product_length_tenpercent
-				if product_length < boot_length:
-					product_fit_score['length'] = 'yes'
-				elif product_length == boot_length:
-					product_fit_score['length'] = 'maybe'
-				elif product_length > boot_length:
-					product_fit_score['length'] = 'no'
 
 			return product_fit_score
 
