@@ -115,9 +115,11 @@ class MainHandler(utils.BaseHandler):
                                 door_plan_literal=door_plan_literal,
                                 year_of_manufacture=year_of_manufacture
                             ))
+
                             # Add the DB Query data
                             vehicle['datastore'] = query
-                            vehicle['datastore']['door_plan_literal_string'] = door_plan_literal_string
+                            if query is not None:
+                                vehicle['datastore']['door_plan_literal_string'] = door_plan_literal_string
                             # Set the response context data
                             self.content = dict(data=vehicle)
                             # Cache for longevity

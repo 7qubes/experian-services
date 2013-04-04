@@ -83,8 +83,10 @@ def get_vehicle(**kwargs):
 						query = query
 						matches['door_plan_literal'] = False
 				else:
-					raise Exception('No model found in datastore with name '+model)	
+					logging.exception('No model found in datastore with name '+model)
+					raise Exception('No model found in datastore with name '+model)
 			else:
+				logging.exception('No make found in datastore with name '+make)
 				raise Exception('No make found in datastore with name '+make)
 
 			# Order the Query by Year Of Manufacture by default, in descending order
