@@ -159,6 +159,11 @@ class MainHandler(utils.BaseHandler):
     		logging.info('boot_minimum_width')
     		logging.info(boot_minimum_width)
 
+
+            # [ST]TODO: We need a better way to check that all dimensions will fit, e.g.
+            # The default product_width<=vehicle_boot_width may not always make sense as one could rotate the product to
+            # another axis and the 'new' width might work
+            
     		# Compare boot width with product width + 10%
     		product_width = request_args.get('width')
     		if product_width is not None:
