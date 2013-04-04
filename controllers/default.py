@@ -53,68 +53,64 @@ class MainHandler(utils.BaseHandler):
                         # Create a Vehicle dictionary                        
                         json_response = dict()
                         json_vehicle_data = self.create_json_response(response.content)
-                        logging.info('json_vehicle_data')
-                        logging.info(json_vehicle_data)
+                        if json_vehicle_data is None:
+                        	raise Exception('Unable to parse DVLA vehicle data')
+                        
                         # Add the DVLA vehicle data or error
                         json_response['dvla'] = json_vehicle_data
                         
-                        # Check we have a successful vehicle lookup
-                        logging.info('json_vehicle_data.get(MAKE)')
-                        logging.info(json_vehicle_data.get('MAKE'))
+                        # Get Make
+                        make = json_vehicle_data.get('MAKE').lower()
+                        make = make.title()
+                        logging.info(make)
 
-                        if json_vehicle_data.get('MAKE') is not None:
-                            # Get Make
-                            make = json_vehicle_data.get('MAKE').lower()
-                            make = make.title()
-                            logging.info(make)
+                        # Get Model
+                        model = json_vehicle_data.get('MODEL').lower()
+                        model = model.title()
+                        # Now select the first word of the model, as we will use this to match our Datastore models
+                        model = model.split(' ')[0]
+                        logging.info(model)
 
-                            # Get Model
-                            model = json_vehicle_data.get('MODEL').lower()
-                            model = model.title()
-                            # Now select the first word of the model, as we will use this to match our Datastore models
-                            model = model.split(' ')[0]
-                            logging.info(model)
+                        # Get Year Of Manufacture
+                        year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
+                        logging.info(year_of_manufacture)
 
-                            # Get Year Of Manufacture
-                            year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
-                            logging.info(year_of_manufacture)
+                        # Get Door Plan Literal
+                        door_plan_literal = ''
+                        door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
+                        door_plan_literal_string = door_plan_literal_string.lower()
+                        door_plan_literal_string = door_plan_literal_string.title()
+                        if door_plan_literal_string in models.dvla_door_plan_literal_inv:
+                            logging.info(door_plan_literal_string)
+                            door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
 
-                            # Get Door Plan Literal
-                            door_plan_literal = ''
-                            door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
-                            door_plan_literal_string = door_plan_literal_string.lower()
-                            door_plan_literal_string = door_plan_literal_string.title()
-                            if door_plan_literal_string in models.dvla_door_plan_literal_inv:
-                                logging.info(door_plan_literal_string)
-                                door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
+                        logging.info(door_plan_literal)
 
-                            logging.info(door_plan_literal)
+                        # Query the DB for the Vehicle
+                        try:
+                            query = datastore.get_vehicle(**dict(
+                                make=make,
+                                model=model,
+                                door_plan_literal=door_plan_literal,
+                                year_of_manufacture=year_of_manufacture
+                            ))
 
-                            # Query the DB for the Vehicle
-                            try:
-                                query = datastore.get_vehicle(**dict(
-                                    make=make,
-                                    model=model,
-                                    door_plan_literal=door_plan_literal,
-                                    year_of_manufacture=year_of_manufacture
-                                ))
+                            
+                            # Add the DB Query data
+                            json_response['datastore'] = query
+                            if query is not None:
+                                json_response['datastore']['door_plan_literal_string'] = door_plan_literal_string
+                                # Calculate the Product fit and add this to the JSON response object
+                                product_fit_score = self.calculate_vehicle_fit(query, self.context['request_args'])
+                                json_response['score'] = product_fit_score
 
-                                
-                                # Add the DB Query data
-                                json_response['datastore'] = query
-                                if query is not None:
-                                    json_response['datastore']['door_plan_literal_string'] = door_plan_literal_string
-                                    # Calculate the Product fit and add this to the JSON response object
-                                    product_fit_score = self.calculate_vehicle_fit(query, self.context['request_args'])
-                                    json_response['score'] = product_fit_score
-
-                                # Cache for longevity
-                                memcache.set(memcache_key, json_response)
-                            except Exception, e:
-                                # Add the DB Query error
-                                json_response['datastore'] = str(e)
-                                # Cache for a short period
-                                memcache.set(memcache_key, json_response, time=8000)        
+                            # Cache for longevity
+                            memcache.set(memcache_key, json_response)
+                        except Exception, e:
+                            # Add the DB Query error
+                            json_response['datastore'] = str(e)
+                            # Cache for a short period
+                            memcache.set(memcache_key, json_response, time=8000)        
 
                         # Set the response context data
                         self.content = dict(data=json_response)
@@ -293,8 +289,6 @@ class MainHandler(utils.BaseHandler):
         	root = etree.fromstring(xml_content)
         	request = root.find('REQUEST')
         	success = request.get('success')
-        	logging.info('success')
-        	logging.info(success)
         	if success is not None and success == 'Y':
         		mb01 = root.find('REQUEST/MB01')
         		for item in mb01:
@@ -307,6 +301,7 @@ class MainHandler(utils.BaseHandler):
         			error = root.find('REQUEST/MXE1/MSG')
         			if error is not None and error != '':
         				response['error'] = error.text
+        	return response
         except Exception, e:
         	logging.exception(e)
         	raise e
