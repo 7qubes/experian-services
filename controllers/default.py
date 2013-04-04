@@ -164,6 +164,9 @@ class MainHandler(utils.BaseHandler):
             # The default product_width<=vehicle_boot_width may not always make sense as one could rotate the product to
             # another axis and the 'new' width might work
             
+            # We need to get the longest product dimension and the longest boot dimension and check these first, then
+            # the other 2 dimenions in order
+
     		# Compare boot width with product width + 10%
     		product_width = request_args.get('width')
     		if product_width is not None:
