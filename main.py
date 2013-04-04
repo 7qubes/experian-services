@@ -52,12 +52,11 @@ class MainHandler(utils.BaseHandler):
         transaction_type = self.experian_config['transaction_type']
         try:
             if 'vrm' in self.context['request_args'] and self.context['request_args']['vrm'] != '':
-                memcache_key = utils.create_memcache_key('vrm', **self.context['request_args'])
+                memcache_key = utils.create_memcache_key('willitfitinmycar', **self.context['request_args'])
+                logging.info('Request : memcache_key')
+                logging.info(memcache_key)
                 memcache_response = memcache.get(memcache_key)
 
-                # [ST]TODO: Remove after debugging
-                memcache_response = None
-                                
                 if memcache_response is not None:
                     self.content = memcache_response
                 else:
@@ -75,68 +74,70 @@ class MainHandler(utils.BaseHandler):
                     )
                     if response.status_code == 200:
                         logging.info(response.content)
-                        json_vehicle_data = self.create_json_response(response.content)
-
-                        # Now look up Vehicle data
-                        # Get Make
-                        make = json_vehicle_data.get('MAKE').lower()
-                        make = make.title()
-                        logging.info(make)
-
-                        # Get Model
-                        model = json_vehicle_data.get('MODEL').lower()
-                        model = model.title()
-                        # Now select the first word of the model, as we will use this to match our Datastore models
-                        model = model.split(' ')[0]
-                        logging.info(model)
-
-                        # Get Year Of Manufacture
-                        year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
-                        logging.info(year_of_manufacture)
-
-                        # Get Door Plan Literal
-                        door_plan_literal = ''
-                        door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
-                        door_plan_literal_string = door_plan_literal_string.lower()
-                        door_plan_literal_string = door_plan_literal_string.title()
-                        if door_plan_literal_string in models.dvla_door_plan_literal_inv:
-                            logging.info(door_plan_literal_string)
-                            door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
-
-                        logging.info(door_plan_literal)
 
                         # Create a Vehicle dictionary                        
                         vehicle = dict()
-                        
-                        # Add the DVLA vehicle data
+                        json_vehicle_data = self.create_json_response(response.content)
+                        logging.info(json_vehicle_data)
+
+                        # Add the DVLA vehicle data or error
                         vehicle['dvla'] = json_vehicle_data
-
-                        # Query the DB for the Vehicle
-                        try:
-                            query = datastore.get_vehicle(**dict(
-                                make=make,
-                                model=model,
-                                door_plan_literal=door_plan_literal,
-                                year_of_manufacture=year_of_manufacture
-                            ))
-
-                            logging.info(query)
-                            # Add the DB Query data
-                            vehicle['datastore'] = query
-                            if query is not None:
-                                vehicle['datastore']['door_plan_literal_string'] = door_plan_literal_string
-                            # Set the response context data
-                            self.content = dict(data=vehicle)
-                            # Cache for longevity
-                            memcache.set(memcache_key, self.content)
-                        except Exception, e:
-                            # Add the DB Query error
-                            vehicle['datastore'] = str(e)
-                            # Set the response context data
-                            self.content = dict(data=vehicle)
-                            # Cache for a short period
-                            memcache.set(memcache_key, self.content, time=8000)
                         
+                        # Check we have a successful vehicle lookup
+                        if json_vehicle_data.get('MAKE') is not None:
+                            # Get Make
+                            make = json_vehicle_data.get('MAKE').lower()
+                            make = make.title()
+                            logging.info(make)
+
+                            # Get Model
+                            model = json_vehicle_data.get('MODEL').lower()
+                            model = model.title()
+                            # Now select the first word of the model, as we will use this to match our Datastore models
+                            model = model.split(' ')[0]
+                            logging.info(model)
+
+                            # Get Year Of Manufacture
+                            year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
+                            logging.info(year_of_manufacture)
+
+                            # Get Door Plan Literal
+                            door_plan_literal = ''
+                            door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
+                            door_plan_literal_string = door_plan_literal_string.lower()
+                            door_plan_literal_string = door_plan_literal_string.title()
+                            if door_plan_literal_string in models.dvla_door_plan_literal_inv:
+                                logging.info(door_plan_literal_string)
+                                door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
+
+                            logging.info(door_plan_literal)
+
+                            # Query the DB for the Vehicle
+                            try:
+                                query = datastore.get_vehicle(**dict(
+                                    make=make,
+                                    model=model,
+                                    door_plan_literal=door_plan_literal,
+                                    year_of_manufacture=year_of_manufacture
+                                ))
+
+                                logging.info(query)
+                                # Add the DB Query data
+                                vehicle['datastore'] = query
+                                if query is not None:
+                                    vehicle['datastore']['door_plan_literal_string'] = door_plan_literal_string
+                                # Set the response context data
+                                self.content = dict(data=vehicle)
+                                # Cache for longevity
+                                memcache.set(memcache_key, self.content)
+                            except Exception, e:
+                                # Add the DB Query error
+                                vehicle['datastore'] = str(e)
+                                # Set the response context data
+                                self.content = dict(data=vehicle)
+                                # Cache for a short period
+                                memcache.set(memcache_key, self.content, time=8000)
+
                     else:
                         raise Exception('Bad Experian Response')
             else:
@@ -164,6 +165,19 @@ class MainHandler(utils.BaseHandler):
                 </MXE1>
             </REQUEST>
         </GEODS>
+
+        Failure:
+        <?xml version='1.0' standalone='yes'?>
+        <GEODS>
+            <REQUEST type='RETURN' success='N'>
+                <ERR1>
+                    <CODE>TM01</CODE>
+                    <SEVERITY>4</SEVERITY>
+                    <MESSAGE>The length of the supplied field is invalid(MXIN_VRM 0)</MESSAGE>
+                </ERR1>
+            </REQUEST>
+        </GEODS>
+
 
         Success:
         <?xml version='1.0' standalone='yes'?>
@@ -212,10 +226,14 @@ class MainHandler(utils.BaseHandler):
         response = dict()
         try:
             root = etree.fromstring(xml_content)
-            mb01 = root.find('REQUEST/MB01')
-            for item in mb01:
-                response[item.tag] = item.text
-
+            request = root.find('REQUEST')
+            success = request.get('success')
+            if success is not None and success == 'Y':
+                mb01 = root.find('REQUEST/MB01')
+                for item in mb01:
+                    response[item.tag] = item.text
+            else:
+                response['error'] = root.find('REQUEST/ERR1/MESSAGE').text
         except Exception, e:
             raise e
         finally:

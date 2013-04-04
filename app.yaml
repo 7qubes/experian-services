@@ -2,7 +2,7 @@ application: experian-services
 version: 0-0-1
 runtime: python27
 api_version: 1
-threadsafe: no
+threadsafe: yes
 
 handlers:
 - url: /robots\.txt
