@@ -49,11 +49,15 @@ class MainHandler(utils.BaseHandler):
                         # Create a Vehicle dictionary                        
                         json_response = dict()
                         json_vehicle_data = self.create_json_response(response.content)
-                        
+                        logging.info('json_vehicle_data')
+                        logging.info(json_vehicle_data)
                         # Add the DVLA vehicle data or error
                         json_response['dvla'] = json_vehicle_data
                         
                         # Check we have a successful vehicle lookup
+                        logging.info('json_vehicle_data.get(MAKE)')
+                        logging.info(json_vehicle_data.get('MAKE'))
+
                         if json_vehicle_data.get('MAKE') is not None:
                             # Get Make
                             make = json_vehicle_data.get('MAKE').lower()
@@ -279,9 +283,9 @@ class MainHandler(utils.BaseHandler):
                 </MB37>
             </REQUEST>
         </GEODS>
-        """
-        response = dict()
+        """        
         try:
+        	response = dict()
             root = etree.fromstring(xml_content)
             request = root.find('REQUEST')
             success = request.get('success')
@@ -300,6 +304,6 @@ class MainHandler(utils.BaseHandler):
                     if error is not None and error != '':
                         response['error'] = error.text
         except Exception, e:
+        	logging.exception(e)
             raise e
-        finally:
-            return response
+        
