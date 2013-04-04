@@ -155,7 +155,7 @@ class MainHandler(utils.BaseHandler):
             product_fit_score = dict(width=None, height=None, length=None)
             boot_widths = [boot_aperture_width_bottom, boot_aperture_width_middle, boot_aperture_width_top]
             boot_minimum_width = min(float(w) for w in boot_widths)
-            product_maximum_dimension = max(float(v) for k,v in request_args.items())
+            product_maximum_dimension = max(float(v) for k,v in request_args.items() if k != 'vrm' and k != 'callback')
             logging.info('product_maximum_dimension')
             logging.info(product_maximum_dimension)
 
