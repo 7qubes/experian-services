@@ -188,11 +188,11 @@ class MainHandler(utils.BaseHandler):
             
             # Sort Product dimensions in descending order
             product_width = float(request_args.get('width'))
-            product_width = (product_width/100)*self.product_packaging
+            product_width = product_width+(product_width/100)*self.product_packaging
             product_height = float(request_args.get('height'))
-            product_height = (product_height/100)*self.product_packaging
+            product_height = product_height+(product_height/100)*self.product_packaging
             product_length = float(request_args.get('length'))
-            product_length = (product_length/100)*self.product_packaging
+            product_length = product_length+(product_length/100)*self.product_packaging
             product_dims = dict(
                 width=product_width,
                 height=product_height,
