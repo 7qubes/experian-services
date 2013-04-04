@@ -180,11 +180,11 @@ class MainHandler(utils.BaseHandler):
             boot_widths = [boot_aperture_width_bottom, boot_aperture_width_middle, boot_aperture_width_top]
             boot_minimum_width = min(float(w) for w in boot_widths)
             # Create a dictionary of Vehicle dimensions
-            vehicle_dims = dict(length=dictboot_length, height=boot_aperture_verticalheight, width=boot_minimum_width)
+            vehicle_dims = dict(length=boot_length, height=boot_aperture_verticalheight, width=boot_minimum_width)
             # Sort Vehicle dimensions in descending order
-            #sorted_vehicle_dims = sorted(vehicle_dims.iteritems(), key=operator.itemgetter(1), reverse=True
-            #logging.info('sorted_vehicle_dims')
-            #logging.info(sorted_vehicle_dims)
+            sorted_vehicle_dims = sorted(vehicle_dims.iteritems(), key=operator.itemgetter(1), reverse=True
+            logging.info('sorted_vehicle_dims')
+            logging.info(sorted_vehicle_dims)
             
             # Sort Product dimensions in the same order as Vehicle dimensions by key
             #ordered_product_dict = collections.OrderedDict()
