@@ -1,6 +1,6 @@
 queue:
 - name: vehiclecollection
-  rate: 20/m
+  rate: 10/m
   bucket_size: 10
   retry_parameters:
       task_age_limit: 480s #8 minutes
