@@ -233,7 +233,13 @@ class MainHandler(utils.BaseHandler):
                 for item in mb01:
                     response[item.tag] = item.text
             else:
-                response['error'] = root.find('REQUEST/ERR1/MESSAGE').text
+                error = root.find('REQUEST/ERR1/MESSAGE')
+                if error is not None and error != '':
+                    response['error'] = error.text
+                else:
+                    error = root.find('REQUEST/MXE1/MSG')
+                    if error is not None and error != '':
+                        response['error'] = error.text
         except Exception, e:
             raise e
         finally:
