@@ -147,7 +147,11 @@ class MainHandler(utils.BaseHandler):
             logging.exception(e)
             self.set_response_error(e.message, 500)
         finally:
-            self.render_json()
+            self.functionName = self.request.get(self.jsonp_request_arg)
+            if self.functionName is not None and self.functionName != '':
+                self.render_jsonp()
+            else:
+                self.render_json()
 
 
     def create_json_response(self, xml_content):

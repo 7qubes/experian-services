@@ -17,8 +17,9 @@ class BaseHandler(webapp2.RequestHandler):
 		self.now = datetime.datetime.now()
 		self.content = dict()
 		self.status_code = 200
+		self.data_output = None
 		self.populateContext()
-
+		self.jsonp_request_arg = '?callback'
 		self.urlfetch = dict(
 			method='POST',
 			deadline=30,
@@ -73,6 +74,16 @@ class BaseHandler(webapp2.RequestHandler):
 
 	def render_json(self):
 		self.data_output = json.dumps(self.content)
+		if self.status_code is not None:
+			self.response.set_status(self.status_code)
+		else:
+			self.response.set_status(200)
+		self.response.headers['Content-Type'] = 'application/json'
+		self.response.out.write(self.data_output)
+		return
+	def render_jsonp(self):
+		self.functionName = self.request.get(self.jsonp_request_arg)
+		self.data_output = self.functionName+'('+json.dumps(self.content)+');'
 		if self.status_code is not None:
 			self.response.set_status(self.status_code)
 		else:
