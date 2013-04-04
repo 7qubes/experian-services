@@ -52,6 +52,12 @@ class MainHandler(utils.BaseHandler):
                         
                         # Create a Vehicle dictionary                        
                         json_response = dict()
+
+                        # Add the request args back into the response object
+                        json_response['request_args'] = self.context['request_args']
+                        json_response['product_packaging'] = self.product_packaging
+                        json_response['unit_of_measurement'] = self.unit_of_measurement
+
                         json_vehicle_data = self.create_json_response(response.content)
                         if json_vehicle_data is None:
                         	raise Exception('Unable to parse DVLA vehicle data')
@@ -157,7 +163,7 @@ class MainHandler(utils.BaseHandler):
     		product_width = request_args.get('width')
     		if product_width is not None:
     			product_width = float(product_width)
-    			product_width_tenpercent = (product_width/100)*10
+    			product_width_tenpercent = (product_width/100)*self.product_packaging
     			logging.info('product_width_tenpercent')
     			logging.info(product_width_tenpercent)
     			product_width = product_width+product_width_tenpercent
@@ -174,7 +180,7 @@ class MainHandler(utils.BaseHandler):
     		product_height = request_args.get('height')
     		if product_height is not None:
     			product_height = float(product_height)
-    			product_height_tenpercent = (product_height/100)*10
+    			product_height_tenpercent = (product_height/100)*self.product_packaging
     			logging.info('product_height_tenpercent')
     			logging.info(product_height_tenpercent)
     			product_height = product_height+product_height_tenpercent
@@ -191,7 +197,7 @@ class MainHandler(utils.BaseHandler):
 			product_length = request_args.get('length')
 			if product_length is not None:
 				product_length = float(product_length)
-				product_length_tenpercent = (product_length/100)*10
+				product_length_tenpercent = (product_length/100)*self.product_packaging
 				logging.info('product_length_tenpercent')
 				logging.info(product_length_tenpercent)
 
