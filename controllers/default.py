@@ -9,6 +9,14 @@ import hmac
 import webapp2
 import datetime
 try:
+    import collections
+except ImportError:
+    logging.exception('Unable to import collections')
+try:
+    import operator
+except ImportError:
+    logging.exception('Unable to import operator')
+try:
     import xml.etree.cElementTree as etree
 except ImportError:
     import xml.etree.ElementTree as etree
@@ -62,20 +70,26 @@ class MainHandler(utils.BaseHandler):
                         if json_vehicle_data is None:
                         	raise Exception('Unable to parse DVLA vehicle data')
                         
+                        logging.info(json_vehicle_data)
+
                         # Add the DVLA vehicle data or error
                         json_response['dvla'] = json_vehicle_data
                         
                         # Get Make
-                        make = json_vehicle_data.get('MAKE').lower()
-                        make = make.title()
-                        logging.info(make)
+                        make = None
+                        if json_vehicle_data.get('MAKE') is not None:
+                            make = json_vehicle_data.get('MAKE').lower()
+                            make = make.title()
+                            logging.info(make)
 
                         # Get Model
-                        model = json_vehicle_data.get('MODEL').lower()
-                        model = model.title()
-                        # Now select the first word of the model, as we will use this to match our Datastore models
-                        model = model.split(' ')[0]
-                        logging.info(model)
+                        model = None
+                        if json_vehicle_data.get('MODEL') is not None:
+                            model = json_vehicle_data.get('MODEL').lower()
+                            model = model.title()
+                            # Now select the first word of the model, as we will use this to match our Datastore models
+                            model = model.split(' ')[0]
+                            logging.info(model)
 
                         # Get Year Of Manufacture
                         year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
@@ -84,8 +98,10 @@ class MainHandler(utils.BaseHandler):
                         # Get Door Plan Literal
                         door_plan_literal = ''
                         door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
-                        door_plan_literal_string = door_plan_literal_string.lower()
-                        door_plan_literal_string = door_plan_literal_string.title()
+                        if door_plan_literal_string is not None:
+                            door_plan_literal_string = door_plan_literal_string.lower()
+                            door_plan_literal_string = door_plan_literal_string.title()
+
                         if door_plan_literal_string in models.dvla_door_plan_literal_inv:
                             logging.info(door_plan_literal_string)
                             door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
@@ -155,14 +171,15 @@ class MainHandler(utils.BaseHandler):
             product_fit_score = dict(width=None, height=None, length=None)
             boot_widths = [boot_aperture_width_bottom, boot_aperture_width_middle, boot_aperture_width_top]
             boot_minimum_width = min(float(w) for w in boot_widths)
-            product_maximum_dimension = max(float(v) for k,v in request_args.items() if k != 'vrm' and k != 'callback')
-            logging.info('product_maximum_dimension')
-            logging.info(product_maximum_dimension)
-
-            all_vehicle_dims = [boot_length,boot_aperture_verticalheight,boot_minimum_width]
-            vehicle_maximum_dimension = max(float(w) for w in all_vehicle_dims)
-            logging.info('vehicle_maximum_dimension')
-            logging.info(vehicle_maximum_dimension)
+            # Create a dictionary of Vehicle dimensions
+            vehicle_dims = dict(length=dictboot_length, height=boot_aperture_verticalheight, width=boot_minimum_width)
+            # Sort Vehicle dimensions in descending order
+            #sorted_vehicle_dims = sorted(vehicle_dims.iteritems(), key=operator.itemgetter(1), reverse=True
+            #logging.info('sorted_vehicle_dims')
+            #logging.info(sorted_vehicle_dims)
+            
+            # Sort Product dimensions in the same order as Vehicle dimensions by key
+            #ordered_product_dict = collections.OrderedDict()
 
             # Compare boot width with product width + 10%
             product_width = request_args.get('width')
