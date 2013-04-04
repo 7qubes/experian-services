@@ -182,7 +182,7 @@ class MainHandler(utils.BaseHandler):
             # Create a dictionary of Vehicle dimensions
             vehicle_dims = dict(length=boot_length, height=boot_aperture_verticalheight, width=boot_minimum_width)
             # Sort Vehicle dimensions in descending order
-            sorted_vehicle_dims = sorted(vehicle_dims.iteritems(), key=operator.itemgetter(1), reverse=True
+            sorted_vehicle_dims = sorted(vehicle_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
             logging.info('sorted_vehicle_dims')
             logging.info(sorted_vehicle_dims)
             
