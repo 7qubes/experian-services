@@ -192,7 +192,7 @@ class MainHandler(utils.BaseHandler):
                 height=float((request_args.get('height')/100)*self.product_packaging),
                 length=float((request_args.get('length')/100)*self.product_packaging)
             )
-            
+
             sorted_product_dims = sorted(product_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
             logging.info('sorted_product_dims')
             logging.info(sorted_product_dims)
@@ -208,10 +208,9 @@ class MainHandler(utils.BaseHandler):
                 elif vehicle_dim[1] < sorted_product_dims[counter][1]:
                     product_fit_score[vehicle_dim[0]] = 'no'
                     logging.info('vehicle '+str(vehicle_dim[0])+' is less than product '+str(sorted_product_dims[counter][0]))
-                
                 counter=counter+1
 
-			return product_fit_score
+            return product_fit_score
 
     	except Exception, e:
     		logging.exception(e)
