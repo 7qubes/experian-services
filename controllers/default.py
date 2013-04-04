@@ -183,8 +183,6 @@ class MainHandler(utils.BaseHandler):
             vehicle_dims = dict(length=boot_length, height=boot_aperture_verticalheight, width=boot_minimum_width)
             # Sort Vehicle dimensions in descending order
             sorted_vehicle_dims = sorted(vehicle_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
-            logging.info('sorted_vehicle_dims')
-            logging.info(sorted_vehicle_dims)
             
             # Sort Product dimensions in descending order
             product_width = float(request_args.get('width'))
@@ -200,20 +198,18 @@ class MainHandler(utils.BaseHandler):
             )
 
             sorted_product_dims = sorted(product_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
-            logging.info('sorted_product_dims')
-            logging.info(sorted_product_dims)
-
+            
             counter = 0
             for vehicle_dim in sorted_vehicle_dims:
                 if vehicle_dim[1] > sorted_product_dims[counter][1]:
-                    logging.info('vehicle '+str(vehicle_dim[0])+' is greater than product '+str(sorted_product_dims[counter][0]))
                     product_fit_score[vehicle_dim[0]] = 'yes'
+                    #logging.info('vehicle '+str(vehicle_dim[0])+' is greater than product '+str(sorted_product_dims[counter][0]))                    
                 elif vehicle_dim[1] == sorted_product_dims[counter][1]:
                     product_fit_score[vehicle_dim[0]] = 'maybe'
-                    logging.info('vehicle '+str(vehicle_dim[0])+' is equal to product '+str(sorted_product_dims[counter][0]))
+                    #logging.info('vehicle '+str(vehicle_dim[0])+' is equal to product '+str(sorted_product_dims[counter][0]))
                 elif vehicle_dim[1] < sorted_product_dims[counter][1]:
                     product_fit_score[vehicle_dim[0]] = 'no'
-                    logging.info('vehicle '+str(vehicle_dim[0])+' is less than product '+str(sorted_product_dims[counter][0]))
+                    #logging.info('vehicle '+str(vehicle_dim[0])+' is less than product '+str(sorted_product_dims[counter][0]))
                 counter=counter+1
 
             return product_fit_score
