@@ -24,10 +24,6 @@ import hashlib
 import hmac
 import webapp2
 import datetime
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import xml.etree.ElementTree as etree
 
 # Import local modules
 from controllers import utils
