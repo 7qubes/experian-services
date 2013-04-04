@@ -148,7 +148,7 @@ class MainHandler(utils.BaseHandler):
     		boot_length = float(json_vehicle.get('boot_length'))
     		product_fit_score = dict(width=None, height=None, length=None)
     		# Get the minimum Boot width
-    		boot_widths = list(boot_aperture_width_bottom, boot_aperture_width_middle, boot_aperture_width_top)
+    		boot_widths = [boot_aperture_width_bottom, boot_aperture_width_middle, boot_aperture_width_top]
     		boot_minimum_width = min(float(w) for w in boot_widths)
     		logging.info('boot_minimum_width')
     		logging.info(boot_minimum_width)
