@@ -35,8 +35,13 @@ from controllers import utils
 def get_vehicle(**kwargs):
 	response = None
 	try:
+		logging.info(kwargs)
 		memcache_key = utils.create_memcache_key('vehicle', **kwargs)
 		memcache_result = memcache.get(memcache_key)
+
+		# [ST]TODO: Remove after debugging
+		memcache_result = None
+
 		if memcache_result is not None:
 			response = memcache_result
 		else:

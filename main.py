@@ -54,6 +54,10 @@ class MainHandler(utils.BaseHandler):
             if 'vrm' in self.context['request_args'] and self.context['request_args']['vrm'] != '':
                 memcache_key = utils.create_memcache_key('vrm', **self.context['request_args'])
                 memcache_response = memcache.get(memcache_key)
+
+                # [ST]TODO: Remove after debugging
+                memcache_response = None
+                                
                 if memcache_response is not None:
                     self.content = memcache_response
                 else:
@@ -116,6 +120,7 @@ class MainHandler(utils.BaseHandler):
                                 year_of_manufacture=year_of_manufacture
                             ))
 
+                            logging.info(query)
                             # Add the DB Query data
                             vehicle['datastore'] = query
                             if query is not None:
