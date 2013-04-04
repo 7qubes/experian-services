@@ -147,53 +147,42 @@ class MainHandler(utils.BaseHandler):
     """
     def calculate_vehicle_fit(self, json_vehicle, request_args):
     	try:
-    		boot_aperture_width_bottom = float(json_vehicle.get('boot_aperture_width_bottom'))
-    		boot_aperture_width_middle = float(json_vehicle.get('boot_aperture_width_middle'))
-    		boot_aperture_width_top = float(json_vehicle.get('boot_aperture_width_top'))
-    		boot_aperture_verticalheight = float(json_vehicle.get('boot_aperture_verticalheight'))
-    		boot_length = float(json_vehicle.get('boot_length'))
-    		product_fit_score = dict(width=None, height=None, length=None)
-    		# Get the minimum Boot width
-    		boot_widths = [boot_aperture_width_bottom, boot_aperture_width_middle, boot_aperture_width_top]
-    		boot_minimum_width = min(float(w) for w in boot_widths)
-    		logging.info('boot_minimum_width')
-    		logging.info(boot_minimum_width)
+            boot_aperture_width_bottom = float(json_vehicle.get('boot_aperture_width_bottom'))
+            boot_aperture_width_middle = float(json_vehicle.get('boot_aperture_width_middle'))
+            boot_aperture_width_top = float(json_vehicle.get('boot_aperture_width_top'))
+            boot_aperture_verticalheight = float(json_vehicle.get('boot_aperture_verticalheight'))
+            boot_length = float(json_vehicle.get('boot_length'))
+            product_fit_score = dict(width=None, height=None, length=None)
+            boot_widths = [boot_aperture_width_bottom, boot_aperture_width_middle, boot_aperture_width_top]
+            boot_minimum_width = min(float(w) for w in boot_widths)
+            product_maximum_dimension = max(float(v) for k,v in request_args.items())
+            logging.info('product_maximum_dimension')
+            logging.info(product_maximum_dimension)
 
+            all_vehicle_dims = [boot_length,boot_aperture_verticalheight,boot_minimum_width]
+            vehicle_maximum_dimension = max(float(w) for w in all_vehicle_dims)
+            logging.info('vehicle_maximum_dimension')
+            logging.info(vehicle_maximum_dimension)
 
-            # [ST]TODO: We need a better way to check that all dimensions will fit, e.g.
-            # The default product_width<=vehicle_boot_width may not always make sense as one could rotate the product to
-            # another axis and the 'new' width might work
-            
-            # We need to get the longest product dimension and the longest boot dimension and check these first, then
-            # the other 2 dimenions in order
-
-    		# Compare boot width with product width + 10%
-    		product_width = request_args.get('width')
-    		if product_width is not None:
-    			product_width = float(product_width)
-    			product_width_tenpercent = (product_width/100)*self.product_packaging
-    			logging.info('product_width_tenpercent')
-    			logging.info(product_width_tenpercent)
-    			product_width = product_width+product_width_tenpercent
-    			logging.info('product_width')
-    			logging.info(product_width)
-    			if product_width < boot_minimum_width:
-    				product_fit_score['width'] = 'yes'
-    			elif product_width == boot_minimum_width:
-    				product_fit_score['width'] = 'maybe'
-    			elif product_width > boot_minimum_width:
-    				product_fit_score['width'] = 'no'
+            # Compare boot width with product width + 10%
+            product_width = request_args.get('width')
+            if product_width is not None:
+                product_width = float(product_width)
+                product_width_tenpercent = (product_width/100)*self.product_packaging
+                product_width = product_width+product_width_tenpercent
+                if product_width < boot_minimum_width:
+                    product_fit_score['width'] = 'yes'
+                elif product_width == boot_minimum_width:
+                    product_fit_score['width'] = 'maybe'
+                elif product_width > boot_minimum_width:
+                    product_fit_score['width'] = 'no'
     		
     		# Compare boot height with product height + 10%
     		product_height = request_args.get('height')
     		if product_height is not None:
     			product_height = float(product_height)
     			product_height_tenpercent = (product_height/100)*self.product_packaging
-    			logging.info('product_height_tenpercent')
-    			logging.info(product_height_tenpercent)
     			product_height = product_height+product_height_tenpercent
-    			logging.info('product_height')
-    			logging.info(product_height)
     			if product_height < boot_aperture_verticalheight:
     				product_fit_score['height'] = 'yes'
     			elif product_height == boot_aperture_verticalheight:
@@ -206,12 +195,7 @@ class MainHandler(utils.BaseHandler):
 			if product_length is not None:
 				product_length = float(product_length)
 				product_length_tenpercent = (product_length/100)*self.product_packaging
-				logging.info('product_length_tenpercent')
-				logging.info(product_length_tenpercent)
-
 				product_length = product_length+product_length_tenpercent
-				logging.info('product_length')
-				logging.info(product_length)
 				if product_length < boot_length:
 					product_fit_score['length'] = 'yes'
 				elif product_length == boot_length:
