@@ -286,8 +286,8 @@ class MainHandler(utils.BaseHandler):
         """        
         try:
         	response = dict()
-            root = etree.fromstring(xml_content)
-            request = root.find('REQUEST')
+        	root = etree.fromstring(xml_content)
+        	request = root.find('REQUEST')
             success = request.get('success')
             logging.info('success')
             logging.info(success)
