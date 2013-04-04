@@ -186,8 +186,25 @@ class MainHandler(utils.BaseHandler):
             logging.info('sorted_vehicle_dims')
             logging.info(sorted_vehicle_dims)
             
-            # Sort Product dimensions in the same order as Vehicle dimensions by key
-            #ordered_product_dict = collections.OrderedDict()
+            # Sort Product dimensions in descending order
+            product_dims = dict(width=float(request_args.get('width')), height=float(request_args.get('height')), length=float(request_args.get('length')))
+            sorted_product_dims = sorted(product_dims.iteritems(), key=operator.itemgetter(1), reverse=True)
+            logging.info('sorted_product_dims')
+            logging.info(sorted_product_dims)
+
+            counter = 0
+            for vehicle_dim in sorted_vehicle_dims:
+                if vehicle_dim[1] > sorted_product_dims[counter][1]:
+                    logging.info('vehicle '+str(vehicle_dim[0])+' is greater than product '+str(sorted_product_dims[counter][0]))
+                    product_fit_score[vehicle_dim[0]] = 'yes'
+                elif vehicle_dim[1] == sorted_product_dims[counter][1]:
+                    product_fit_score[vehicle_dim[0]] = 'maybe'
+                    logging.info('vehicle '+str(vehicle_dim[0])+' is equal to product '+str(sorted_product_dims[counter][0]))
+                elif vehicle_dim[1] < sorted_product_dims[counter][1]:
+                    product_fit_score[vehicle_dim[0]] = 'no'
+                    logging.info('vehicle '+str(vehicle_dim[0])+' is less than product '+str(sorted_product_dims[counter][0]))
+                
+                counter=counter+1
 
             # Compare boot width with product width + 10%
             product_width = request_args.get('width')
