@@ -52,6 +52,10 @@ class MainHandler(utils.BaseHandler):
         transaction_type = self.experian_config['transaction_type']
         try:
             if 'vrm' in self.context['request_args'] and self.context['request_args']['vrm'] != '':
+
+                is_valid_vrm = utils.validate_vrm(self.context['request_args']['vrm'])
+                if is_valid_vrm is None:
+                    raise Exception('Invalid VRM value')
                 memcache_key = utils.create_memcache_key('willitfitinmycar', **self.context['request_args'])
                 logging.info('Request : memcache_key')
                 logging.info(memcache_key)

@@ -8,6 +8,7 @@ import hashlib
 import hmac
 import webapp2
 import datetime
+import re
 
 class BaseHandler(webapp2.RequestHandler):
 	context = {}
@@ -100,3 +101,9 @@ def create_memcache_key(key_prefix, **kwargs):
 				value = str(value)
 			memcache_key+=request_arg+'='+value
 	return memcache_key
+
+def validate_vrm(vrm):
+	pattern = '^([A-Z]{3}\s?(\d{3}|\d{2}|d{1})\s?[A-Z])|([A-Z]\s?(\d{3}|\d{2}|\d{1})\s?[A-Z]{3})|(([A-HK-PRSVWY][A-HJ-PR-Y])\s?([0][2-9]|[1-9][0-9])\s?[A-HJ-PR-Z]{3})$'
+	vrm_pattern = re.compile(pattern)
+	vrm_match_objects = vrm_pattern.search(vrm)
+	return vrm_match_objects

@@ -136,11 +136,12 @@ def set_vehicle(**kwargs):
 			year_of_manufacture=yom,
 			door_plan=kwargs.get('door_plan'),
 			door_plan_literal=kwargs.get('door_plan_literal'),
-			boot_aperture_bottom=kwargs.get('boot_aperture_bottom'),
-			boot_aperture_middle=kwargs.get('boot_aperture_middle'),
-			boot_aperture_top=kwargs.get('boot_aperture_top'),
+			boot_aperture_width_bottom=kwargs.get('boot_aperture_width_bottom'),
+			boot_aperture_width_middle=kwargs.get('boot_aperture_width_middle'),
+			boot_aperture_width_top=kwargs.get('boot_aperture_width_top'),
 			boot_aperture_height=kwargs.get('boot_aperture_height'),
-			boot_aperture_verticalheight=kwargs.get('boot_aperture_verticalheight')
+			boot_aperture_verticalheight=kwargs.get('boot_aperture_verticalheight'),
+			boot_length=kwargs.get('boot_length')
 		)
 
 		return vehicle.key()

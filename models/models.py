@@ -230,15 +230,15 @@ class Vehicle(db.Model):
     indexed=True,
     choices=set(dvla_door_plan_literal.keys())
   )
-  boot_aperture_bottom = db.FloatProperty(
+  boot_aperture_width_bottom = db.FloatProperty(
     required=False,
     indexed=True
   )
-  boot_aperture_middle = db.FloatProperty(
+  boot_aperture_width_middle = db.FloatProperty(
     required=False,
     indexed=True
   )
-  boot_aperture_top = db.FloatProperty(
+  boot_aperture_width_top = db.FloatProperty(
     required=False,
     indexed=True
   )
@@ -247,6 +247,10 @@ class Vehicle(db.Model):
     indexed=True
   )
   boot_aperture_verticalheight = db.FloatProperty(
+    required=False,
+    indexed=True
+  )
+  boot_length = db.FloatProperty(
     required=False,
     indexed=True
   )

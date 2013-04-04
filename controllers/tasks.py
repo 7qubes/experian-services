@@ -35,12 +35,12 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 			yom = None
 			door_plan = ''
 			door_plan_literal = ''
-			boot_aperture_bottom = None
-			boot_aperture_middle = None
-			boot_aperture_top = None
+			boot_aperture_width_bottom = None
+			boot_aperture_width_middle = None
+			boot_aperture_width_top = None
 			boot_aperture_height = None
 			boot_aperture_verticalheight = None
-
+			boot_length = None
 			# Set the default URL
 			url = self.ricability_config.get('url')
 			# Create the Request parameter arguments
@@ -73,47 +73,47 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 						vehicle_name = vehicle_name_strong.childNodes[-1].nodeValue
 						logging.info(vehicle_name)
 
-						vehicle_name_split = vehicle_name.split(' ')
-						logging.info('vehicle_name_split')
-						logging.info(vehicle_name_split)
 
-						make = vehicle_name_split[0]
-						logging.info(make)
+						# Collected Make and Model
+						# [ST]TODO: Refactor to use regex pattern
+						vehicle_name_split = vehicle_name.split(' ')
 						
-						model = vehicle_name_split[1]
-						logging.info(model)
+						make = vehicle_name_split[0]
+						
+						if make == 'Mercedes Benz':
+							model = vehicle_name_split[2]
+						else:
+							model = vehicle_name_split[1]
+						
 
 						# Extract Door Plan
 						regexp_pattern_doorplan = re.compile('(\d+[dr]{2}\s[a-zA-Z\-0-9]+)')
 						regex_result_doorplan = regexp_pattern_doorplan.findall(vehicle_name)
-						logging.info('regex_result_doorplan')
-						logging.info(regex_result_doorplan)
+						
 
 						if len(regex_result_doorplan) > 0:
 							door_plan_text = regex_result_doorplan[0]
 							# Set the Door Plan collected from Ricability to lowercase
 							# This is to avoid tyhis scenario not matching: '3dr hatch' vs '3dr Hatch' (no match)
 							door_plan_text = door_plan_text.lower()
-							logging.info(door_plan_text)
+							
 							# Set DVLA Door Plan Code
 							if models.ricability_to_dvla_door_plan.get(door_plan_text) is not None:
 								dvla_door_plan_code = models.ricability_to_dvla_door_plan.get(door_plan_text)
 								if dvla_door_plan_code is not None:
 									door_plan = dvla_door_plan_code
-									logging.info(door_plan)
+									
 							# Set DVLA Door Plan Literal
 							if models.ricability_to_dvla_door_plan_literal.get(door_plan_text) is not None:
 								dvla_door_plan_literal = models.ricability_to_dvla_door_plan_literal.get(door_plan_text)
 								if dvla_door_plan_literal is not None:
 									door_plan_literal = dvla_door_plan_literal
-									logging.info(door_plan_literal)
+									
 						# Extract Year Of Manufacture
 						regexp_pattern_yom = re.compile('(\d{4})')
 						regex_result_yom = regexp_pattern_yom.findall(vehicle_name)
 						if len(regex_result_yom) > 0:
 							yom = regex_result_yom[0]
-							logging.info(yom)
-
 
 						# Extract Boot dimensions
 						all_tables = div.getElementsByTagName('table')
@@ -130,8 +130,6 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 								thead_node_value = thead_nodes[-1].nodeValue
 								thead_node_value = thead_node_value.strip()
 								if thead_node_value == 'Boot size':
-									logging.info('Boot Dimensions')
-
 									# For each Row data
 									for row in trows:
 										# Get all the TD cells
@@ -144,7 +142,7 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 												try:
 													second_cell = cells[1].childNodes[-1].nodeValue.strip()
 													if second_cell != 'n / a':
-														boot_aperture_bottom = float(second_cell)
+														boot_aperture_width_bottom = float(second_cell)
 												except Exception, e:
 													logging.exception('Aperture Bottom')
 													logging.exception(e)
@@ -153,7 +151,7 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 												try:
 													second_cell = cells[1].childNodes[-1].nodeValue.strip()
 													if second_cell != 'n / a':
-														boot_aperture_middle = float(second_cell)
+														boot_aperture_width_middle = float(second_cell)
 												except Exception, e:
 													logging.exception('Aperture Middle')
 													logging.exception(e)
@@ -162,7 +160,7 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 												try:
 													second_cell = cells[1].childNodes[-1].nodeValue.strip()
 													if second_cell != 'n / a':
-														boot_aperture_top = float(second_cell)
+														boot_aperture_width_top = float(second_cell)
 												except Exception, e:
 													logging.exception('Aperture Top')
 													logging.exception(e)
@@ -185,17 +183,24 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 														boot_aperture_height_text = second_cell
 														regexp_pattern_boot_aperture_verticalheight = re.compile('(\d{2})')
 														regex_result_boot_aperture_verticalheight = regexp_pattern_boot_aperture_verticalheight.findall(boot_aperture_height_text)
-														logging.info('regex_result_boot_aperture_verticalheight')
-														logging.info(regex_result_boot_aperture_verticalheight)
-														logging.info('regex_result_boot_aperture_verticalheight[0]')
-														logging.info(regex_result_boot_aperture_verticalheight[0])
 														boot_aperture_verticalheight = float(regex_result_boot_aperture_verticalheight[0])
-														logging.info('boot_aperture_verticalheight')
-														logging.info(boot_aperture_verticalheight)
 												except Exception, e:
 													logging.exception('Aperture Vertical Height')
 													logging.exception(e)
 
+											# Get Boot Length
+											if first_cell_text == 'Floor length: Back row of seats upright (min)':
+												try:
+													second_cell = cells[1].childNodes[1].nodeValue.strip()
+													if second_cell != 'n / a to n / a':
+														boot_length_pattern = re.compile('(\d{2})')
+														boot_length_matches = boot_length_pattern.findall(second_cell)
+														if boot_length_matches is not None and len(boot_length_matches) > 0:
+															boot_length = float(boot_length_matches[0])															
+												except Exception, e:
+													logging.exception('Boot Length')
+													logging.exception(e)
+													
 									# Break out of table loop
 									break
 
@@ -205,11 +210,12 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 							year_of_manufacture=yom,
 							door_plan=door_plan,
 							door_plan_literal=door_plan_literal,
-							boot_aperture_bottom=boot_aperture_bottom,
-							boot_aperture_middle=boot_aperture_middle,
-							boot_aperture_top=boot_aperture_top,
+							boot_aperture_width_bottom=boot_aperture_width_bottom,
+							boot_aperture_width_middle=boot_aperture_width_middle,
+							boot_aperture_width_top=boot_aperture_width_top,
 							boot_aperture_height=boot_aperture_height,
-							boot_aperture_verticalheight=boot_aperture_verticalheight
+							boot_aperture_verticalheight=boot_aperture_verticalheight,
+							boot_length=boot_length
 						))
 						
 						# Break #container-content
