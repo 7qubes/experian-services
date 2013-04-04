@@ -288,22 +288,21 @@ class MainHandler(utils.BaseHandler):
         	response = dict()
         	root = etree.fromstring(xml_content)
         	request = root.find('REQUEST')
-            success = request.get('success')
-            logging.info('success')
-            logging.info(success)
-            if success is not None and success == 'Y':
-                mb01 = root.find('REQUEST/MB01')
-                for item in mb01:
-                    response[item.tag] = item.text
-            else:
-                error = root.find('REQUEST/ERR1/MESSAGE')
-                if error is not None and error != '':
-                    response['error'] = error.text
-                else:
-                    error = root.find('REQUEST/MXE1/MSG')
-                    if error is not None and error != '':
-                        response['error'] = error.text
+        	success = request.get('success')
+        	logging.info('success')
+        	logging.info(success)
+        	if success is not None and success == 'Y':
+        		mb01 = root.find('REQUEST/MB01')
+        		for item in mb01:
+        			response[item.tag] = item.text
+        	else:
+        		error = root.find('REQUEST/ERR1/MESSAGE')
+        		if error is not None and error != '':
+        			response['error'] = error.text
+        		else:
+        			error = root.find('REQUEST/MXE1/MSG')
+        			if error is not None and error != '':
+        				response['error'] = error.text
         except Exception, e:
         	logging.exception(e)
-            raise e
-        
+        	raise e
