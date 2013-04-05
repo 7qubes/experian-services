@@ -81,9 +81,7 @@ class MainHandler(utils.BaseHandler):
                             make = json_vehicle_data.get('MAKE').lower()
                             make = make.title()
                             logging.info(make)
-                        else:
-                            make = 'Ford'
-
+                        
                         # Get Model
                         model = None
                         if json_vehicle_data.get('MODEL') is not None:
@@ -92,8 +90,6 @@ class MainHandler(utils.BaseHandler):
                             # Now select the first word of the model, as we will use this to match our Datastore models
                             model = model.split(' ')[0]
                             logging.info(model)
-                        else:
-                            model = 'Fiesta'
 
                         # Get Year Of Manufacture
                         year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
