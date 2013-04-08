@@ -76,14 +76,19 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 
 						# Collected Make and Model
 						# [ST]TODO: Refactor to use regex pattern
+						# Avoid this: [u'Volvo', u'', u'V40', u'D2', u'1.6', u'84', u'kW', u'5dr', u'hatch', u'2012']
 						vehicle_name_split = vehicle_name.split(' ')
-						
+						# Remove any empty string entries in the list
+						vehicle_name_split = [v for v in vehicle_name_split if v != '']
+
+						logging.info(vehicle_name_split)
+
 						make = vehicle_name_split[0]
 						
 						if make == 'Mercedes Benz':
-							model = vehicle_name_split[2]
+							model = vehicle_name_split[2].strip()
 						else:
-							model = vehicle_name_split[1]
+							model = vehicle_name_split[1].strip()
 						
 
 						# Extract Door Plan
