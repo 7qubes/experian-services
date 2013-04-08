@@ -109,7 +109,7 @@ def get_vehicle(**kwargs):
 				ricability_model_name = vehicle.ricability_model_name
 				if ricability_model_name is not None and ricability_model_name != '':
 					image_filename = ricability_model_name.split(' ')
-					image_filename = image_filename.join('-')
+					image_filename = '-'.join(image_filename)
 					# Add images object with Front View image
 					response['images'] = {'front_view':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/1_Front%20View/'+image_filename+'.jpg'}
 				response['matches'] = matches
