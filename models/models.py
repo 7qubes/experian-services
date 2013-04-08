@@ -144,8 +144,20 @@ dvla_door_plan = {
   '85':'Tower Wagon',
   '86':'Crane',
   '87':'Lift Truck',
+  '88':'Snow Plough',
+  '89':'Loading Shovel',
+  '90':'Rear Digger',
+  '91':'Station Tractor',
+  '92':'Tractor Excavator',
+  '93':'Hydraulic Excavator',
+  '94':'Cesspool Emptier',
   '95':'Skeletal Vehicle',
-  '96':'MPV'
+  '96':'MPV',
+  '97':'Uncodable Body Types (Spaces)',
+  '98':'Not Recorded',
+  '99':'Special Purpose',
+  'A1':'Tel Material Handler',
+  'A2':'Mobile Pump'
 }
 
 dvla_door_plan_inv = dict((v,k) for k, v in dvla_door_plan.iteritems())
@@ -173,23 +185,6 @@ ricability_to_dvla_door_plan = {
 # Inverse Object of Ricability to DVLA Door Plan
 ricability_to_dvla_door_plan_inv = dict((v,k) for k, v in ricability_to_dvla_door_plan.iteritems())
 
-"""
-
-
-
-88  Snow Plough Snow Plough
-89  Wheeled/Crawler/Loading Shovel  Loading Shovel
-90  Tractor with Digger/Back Hoe/Back Actor and Loader  Rear Digger
-91  Railway Station/Post Office Tractor Station Tractor
-92  Tractor Excavator Tractor Excavator
-93  360 Degrees Hydraulic Excavator Hydraulic Excavator
-94  Cesspool Emptier  Cesspool Emptier
-97  Uncodable Body Types  (Spaces)
-98  Body Type not Known Not Recorded
-99  Special Purpose Vehicles  Special Purpose
-A1  Tel Material Handler  Tel Material Handler
-A2  Mobile Pump Mobile Pump
-"""
 
 """
   @name: BaseModel
