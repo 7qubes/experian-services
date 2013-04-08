@@ -32,6 +32,7 @@ ricability_to_dvla_door_plan_literal = {
   '2dr coupe':'K',
   '4dr saloon':'C',
   '3dr hatch':'B',
+  '3dr Hatchback':'B',
   '3dr coupe':'M',
   '3dr 4x4':'E',
   '5dr hatch':'D',
@@ -160,7 +161,9 @@ ricability_to_dvla_door_plan = {
   '5dr 4x4':'06',
   '5dr MPV':'06',
   '3dr 4x4':'06',
-  '5dr Hatchback':'14'
+  '5dr Hatchback':'14',
+  '3dr Hatchback':'13',
+  '5dr coupe':'05'
 }
 
 # Inverse Object of Ricability to DVLA Door Plan
