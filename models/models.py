@@ -38,7 +38,8 @@ ricability_to_dvla_door_plan_literal = {
   '5dr estate':'G',
   '5dr saloon':'D',
   '5dr 4x4':'G',
-  '5dr MPV':'G'
+  '5dr MPV':'G',
+  '5dr Hatchback':'D'
 }
 
 ricability_to_dvla_door_plan_literal_inv = dict((v,k) for k, v in ricability_to_dvla_door_plan_literal.iteritems())
