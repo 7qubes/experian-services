@@ -30,6 +30,7 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 			
 			# Get Task params
 			vehicle_id = str(self.request.get('vehicle_id'))
+			vehicle_description = str(self.request.get('vehicle_description'))
 			make = ''
 			model = ''
 			yom = None
@@ -220,7 +221,8 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 							boot_aperture_width_top=boot_aperture_width_top,
 							boot_aperture_height=boot_aperture_height,
 							boot_aperture_verticalheight=boot_aperture_verticalheight,
-							boot_length=boot_length
+							boot_length=boot_length,
+							ricability_model_name=vehicle_description							
 						))
 						
 						# Break #container-content

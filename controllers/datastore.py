@@ -104,6 +104,14 @@ def get_vehicle(**kwargs):
 			if vehicle is not None:
 				# Convert the Model instance to a dictionary
 				response = db.to_dict(vehicle, dict(key_name=vehicle.key().name() or vehicle.key().id()))
+
+				# Get image URl for Vehicle views on Ricability
+				ricability_model_name = vehicle.ricability_model_name
+				if ricability_model_name is not None and ricability_model_name != '':
+					image_filename = ricability_model_name.split(' ')
+					image_filename = image_filename.join('-')
+					# Add images object with Front View image
+					response['images'] = {'front_view':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/1_Front%20View/'+image_filename+'.jpg'}
 				response['matches'] = matches
 				# Set this in Memcache
 				memcache.set(memcache_key, response)
@@ -133,6 +141,7 @@ def set_vehicle(**kwargs):
 			key_name=key_name,
 			make=kwargs.get('make'),
 			model=kwargs.get('model'),
+			ricability_model_name=kwargs.get('ricability_model_name'),
 			year_of_manufacture=yom,
 			door_plan=kwargs.get('door_plan'),
 			door_plan_literal=kwargs.get('door_plan_literal'),

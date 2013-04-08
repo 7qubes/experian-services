@@ -216,6 +216,10 @@ class Vehicle(db.Model):
     required=True,
     indexed=True
   )
+  ricability_model_name = db.StringProperty(
+    required=False,
+    indexed=True
+  )
   year_of_manufacture = db.IntegerProperty(
     required=False,
     indexed=True

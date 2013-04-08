@@ -41,7 +41,8 @@ class RicabilityVehicleCollection(utils.BaseHandler):
 						queue_name='vehiclecollection',
 						url='/tasks/ricability-vehicle-collection',
 						params={
-							'vehicle_id':vehicle_id
+							'vehicle_id':vehicle_id,
+							'vehicle_description':vehicle_description
 						}
 					)
 			
