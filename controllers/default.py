@@ -197,15 +197,30 @@ class MainHandler(utils.BaseHandler):
             
             counter = 0
             for vehicle_dim in sorted_vehicle_dims:
+                """
                 if vehicle_dim[1] > sorted_product_dims[counter][1]:
+                    logging.info('Vehicle dimension '+str(vehicle_dim[0])+' is greater than Product dimension '+str(sorted_product_dims[counter][0]))
                     product_fit_score[vehicle_dim[0]] = 'yes'
-                    #logging.info('vehicle '+str(vehicle_dim[0])+' is greater than product '+str(sorted_product_dims[counter][0]))                    
-                elif vehicle_dim[1] == sorted_product_dims[counter][1]:
+                elif vehicle_dim[1] > sorted_product_dims[counter][1]+:
+                    logging.info('Vehicle dimension '+str(vehicle_dim[0])+' is equal to Product dimension '+str(sorted_product_dims[counter][0]))
                     product_fit_score[vehicle_dim[0]] = 'maybe'
-                    #logging.info('vehicle '+str(vehicle_dim[0])+' is equal to product '+str(sorted_product_dims[counter][0]))
                 elif vehicle_dim[1] < sorted_product_dims[counter][1]:
+                    logging.info('Vehicle dimension '+str(vehicle_dim[0])+' is less than Product dimension '+str(sorted_product_dims[counter][0]))
+                    product_fit_score[vehicle_dim[0]] = 'no'                    
+                """
+                # 'Yes' scenario
+                if sorted_product_dims[counter][1] < (vehicle_dim[1]-self.vehicle_boot_space_deviation):
+                    logging.info('Product dimension '+str(sorted_product_dims[counter][0])+' is less than Vehicle dimension '+str(vehicle_dim[0]))
+                    product_fit_score[vehicle_dim[0]] = 'yes'
+                # 'Maybe' scenario
+                elif sorted_product_dims[counter][1] > (vehicle_dim[1]-self.vehicle_boot_space_deviation) and sorted_product_dims[counter][1] < vehicle_dim[1]:
+                    logging.info('Product dimension '+str(sorted_product_dims[counter][0])+' is about equal to Vehicle dimension '+str(vehicle_dim[0]))
+                    product_fit_score[vehicle_dim[0]] = 'maybe'
+                # 'No' scenario
+                elif sorted_product_dims[counter][1] > vehicle_dim[1]:
+                    logging.info('Product dimension '+str(sorted_product_dims[counter][0])+' is greater than Vehicle dimension '+str(vehicle_dim[0]))
                     product_fit_score[vehicle_dim[0]] = 'no'
-                    #logging.info('vehicle '+str(vehicle_dim[0])+' is less than product '+str(sorted_product_dims[counter][0]))
+
                 counter=counter+1
 
             return product_fit_score

@@ -22,6 +22,7 @@ class BaseHandler(webapp2.RequestHandler):
 		self.populateContext()
 		self.jsonp_request_arg = '?callback'
 		self.product_packaging = 10
+		self.vehicle_boot_space_deviation = 2
 		self.unit_of_measurement = 'cm'
 		self.urlfetch = dict(
 			method='POST',
