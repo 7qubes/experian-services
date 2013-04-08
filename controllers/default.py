@@ -100,8 +100,6 @@ class MainHandler(utils.BaseHandler):
                         door_plan_literal_string = None
                         if json_vehicle_data.get('DOORPLANLITERAL') is not None:
                             door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
-                        else:
-                            door_plan_literal_string = '5 DOOR HATCHBACK'
                         
                         if door_plan_literal_string is not None:
                             door_plan_literal_string = door_plan_literal_string.lower()
