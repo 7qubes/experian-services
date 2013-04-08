@@ -111,7 +111,7 @@ def get_vehicle(**kwargs):
 					image_filename = ricability_model_name.split(' ')
 					image_filename = '-'.join(image_filename)
 					# Add images object with Front View image
-					response['images'] = {'front_view':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/1_Front%20View/'+image_filename+'.jpg'}
+					response['images'] = {'front_view':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/1_Front View/'+image_filename+'.jpg'}
 				response['matches'] = matches
 				# Set this in Memcache
 				memcache.set(memcache_key, response)
