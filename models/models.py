@@ -159,22 +159,16 @@ ricability_to_dvla_door_plan = {
   '5dr saloon':'03',
   '5dr 4x4':'06',
   '5dr MPV':'06',
-  '3dr 4x4':'06'
+  '3dr 4x4':'06',
+  '5dr Hatchback':'14'
 }
 
 # Inverse Object of Ricability to DVLA Door Plan
 ricability_to_dvla_door_plan_inv = dict((v,k) for k, v in ricability_to_dvla_door_plan.iteritems())
 
 """
-
-
-
-  
-96  MPV MPV
-
-
 95  Skeletal Vehicle  Skeletal Vehicle
-
+96  MPV MPV
 
 
 88  Snow Plough Snow Plough
