@@ -37,6 +37,7 @@ ricability_to_dvla_door_plan_literal = {
   '3dr 4x4':'E',
   '5dr hatch':'D',
   '3dr estate':'E',
+  '4dr MPV':'C',
   '5dr estate':'G',
   '5dr saloon':'D',
   '5dr 4x4':'G',
@@ -142,7 +143,9 @@ dvla_door_plan = {
   '84':'Gritting Vehicle',
   '85':'Tower Wagon',
   '86':'Crane',
-  '87':'Lift Truck'
+  '87':'Lift Truck',
+  '95':'Skeletal Vehicle',
+  '96':'MPV'
 }
 
 dvla_door_plan_inv = dict((v,k) for k, v in dvla_door_plan.iteritems())
@@ -152,6 +155,7 @@ ricability_to_dvla_door_plan = {
   '2dr convertible':'04',
   '2dr coupe':'05',
   '4dr saloon':'02',
+  '4dr MPV':'96',
   '3dr hatch':'13',
   '3dr coupe':'05',
   '5dr hatch':'14',
@@ -159,7 +163,7 @@ ricability_to_dvla_door_plan = {
   '5dr estate':'06',
   '5dr saloon':'03',
   '5dr 4x4':'06',
-  '5dr MPV':'06',
+  '5dr MPV':'96',
   '3dr 4x4':'06',
   '5dr Hatchback':'14',
   '3dr Hatchback':'13',
@@ -170,8 +174,7 @@ ricability_to_dvla_door_plan = {
 ricability_to_dvla_door_plan_inv = dict((v,k) for k, v in ricability_to_dvla_door_plan.iteritems())
 
 """
-95  Skeletal Vehicle  Skeletal Vehicle
-96  MPV MPV
+
 
 
 88  Snow Plough Snow Plough
