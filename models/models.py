@@ -109,7 +109,39 @@ dvla_door_plan = {
   '52':'Skip Loader',
   '53':'Special Mobile Unit',
   '54':'Light Utility 4x4',
-  '55':'Airport Support Unit'
+  '55':'Airport Support Unit',
+  '56':'S/D Bus/Coach',
+  '57':'D/D Bus/Coach',
+  '58':'Standee Bus',
+  '59':'H/D Bus/Coach',
+  '60':'Minibus',
+  '61':'Curtain Sided',
+  '62':'Tourer',
+  '63':'Agricultural Tractor',
+  '64':'Combine Harvester',
+  '65':'Root Crop Harvester',
+  '66':'Forage Harvester',
+  '67':'Windrower',
+  '68':'Sprayer',
+  '69':'Viner/Picker',
+  '70':'Agricultural Machine',
+  '71':'Mowing Machine',
+  '73':'Road Surfacer',
+  '72':'Moped',
+  '74':'Road Testing',
+  '75':'Tractor',
+  '76':'Ambulance',
+  '77':'Fire Engine',
+  '78':'Bull Dozer',
+  '79':'Road Stripper',
+  '80':'Tar Sprayer',
+  '81':'Line Painter',
+  '82':'Roller',
+  '83':'Street Cleansing',
+  '84':'Gritting Vehicle',
+  '85':'Tower Wagon',
+  '86':'Crane',
+  '87':'Lift Truck'
 }
 
 dvla_door_plan_inv = dict((v,k) for k, v in dvla_door_plan.iteritems())
@@ -125,7 +157,9 @@ ricability_to_dvla_door_plan = {
   '3dr estate':'06',
   '5dr estate':'06',
   '5dr saloon':'03',
-  '5dr 4x4':'06'
+  '5dr 4x4':'06',
+  '5dr MPV':'06',
+  '3dr 4x4':'06'
 }
 
 # Inverse Object of Ricability to DVLA Door Plan
@@ -135,44 +169,14 @@ ricability_to_dvla_door_plan_inv = dict((v,k) for k, v in ricability_to_dvla_doo
 
 
 
-  62 ='Tourer'
+  
 96  MPV MPV
-72  Moped (to be used for vehicles registered after 31 July 1977) Moped
+
 
 95  Skeletal Vehicle  Skeletal Vehicle
-56  Single Deck Bus/Coach S/D Bus/Coach
-57  Double Deck Bus/Coach D/D Bus/Coach
-58  Standee Bus Standee Bus
-59  Half Deck Bus/Coach H/D Bus/Coach
-60  Minibus (including personal carriers derived from panel vans but excluding dual purpose passenger/goods vehicles)
-  Minibus
-61  Curtain Sided Curtain Sided
-63  Tractors (agricultural type)  Agricultural Tractor
-64  Combine Harvester Combine Harvester
-65  Potato, Beet etc. Harvester Root Crop Harvester
-66  Forage Harvester  Forage Harvester
-67  Windrower Windrower
-68  Sprayer Sprayer
-69  Above Ground Crop Picker  Viner/Picker
-70  Other Agricultural Machinery  Agricultural Machine
-71  Mowing Machine  Mowing Machine
-73  Road Surfacer Road Surfacer
-74  Road Testing  Road Testing
-75  Tractor (Showman or heavy haulage type including industrial highway tractor without attachments, not prime movers - these vehicles to be described by the trailer type normally accompanying the prime mover i.e. front half of the artic vehicle)
-  Tractor
-76  Ambulance Ambulance
-77  Fire Engine Fire Engine
-78  Bull Dozer  Bull Dozer
-79  Road Stripper or Burner Road Stripper
-80  Road Tar Sprayer  Tar Sprayer
-81  White Line Painter  Line Painter
-82  Roller (including playing field type) Roller
-83  Street Cleansing  Street Cleansing
-84  Gritting Vehicle  Gritting Vehicle
-85  Tower Wagon Tower Wagon
-86  Mobile Crane  Crane
-87  Lift Truck (including side load, scissors lift, jack lift, straddle carrier, baggage elevator)
-  Lift Truck
+
+
+
 88  Snow Plough Snow Plough
 89  Wheeled/Crawler/Loading Shovel  Loading Shovel
 90  Tractor with Digger/Back Hoe/Back Actor and Loader  Rear Digger
