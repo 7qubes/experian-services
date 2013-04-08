@@ -112,7 +112,7 @@ def get_vehicle(**kwargs):
 					image_filename = '-'.join(image_filename)
 					# Add images object with Front View image
 					response['images'] = {
-						'front_view':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/1_Front View/'+image_filename+'.jpg',,
+						'front_view':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/1_Front View/'+image_filename+'.jpg',
 						'rear_view':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/2_Rear View/'+image_filename+'.jpg',
 						'boot':'http://www.ricability.org.uk/consumer_reports/mobility_reports/car_measurement_guide/i/cars/Boot/'+image_filename+'.jpg'
 					}
