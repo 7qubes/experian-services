@@ -31,6 +31,7 @@ ricability_to_dvla_door_plan_literal = {
   '2dr convertible':'H',
   '2dr coupe':'K',
   '4dr saloon':'C',
+  '4 dr saloon':'C',
   '3dr hatch':'B',
   '3dr hatchback':'B',
   '3dr coupe':'M',
@@ -38,13 +39,16 @@ ricability_to_dvla_door_plan_literal = {
   '5dr hatch':'D',
   '3dr estate':'E',
   '4dr mpv':'N',
+  '4dr 4x4':'N',
   '4dr coupe':'C',
+  '4dr estate':'N',
   '5dr estate':'G',
   '5dr saloon':'D',
   '5dr 4x4':'G',
   '5dr mpv':'G',
   '5dr hatchback':'D',
-  '5dr coupe':'T'
+  '5dr coupe':'T',
+  '6dr mpv':'R'
 }
 
 ricability_to_dvla_door_plan_literal_inv = dict((v,k) for k, v in ricability_to_dvla_door_plan_literal.iteritems())
@@ -168,6 +172,7 @@ ricability_to_dvla_door_plan = {
   '2dr convertible':'04',
   '2dr coupe':'05',
   '4dr saloon':'02',
+  '4 dr saloon':'02',
   '4dr mpv':'96',
   '3dr hatch':'13',
   '3dr coupe':'05',
@@ -181,7 +186,10 @@ ricability_to_dvla_door_plan = {
   '5dr hatchback':'14',
   '3dr hatchback':'13',
   '5dr coupe':'05',
-  '4dr coupe':'05'
+  '4dr coupe':'05',
+  '6dr mpv':'96',
+  '4dr 4x4':'96',
+  '4dr estate':'06'
 }
 
 # Inverse Object of Ricability to DVLA Door Plan
