@@ -29,6 +29,7 @@ from models import models
 class MainHandler(utils.BaseHandler):
     def get(self):
         self.set_request_arguments()
+        dvla_data = None
         transaction_type = self.experian_config['transaction_type']
         try:
             if 'vrm' in self.context['request_args'] and self.context['request_args']['vrm'] != '':
@@ -44,104 +45,118 @@ class MainHandler(utils.BaseHandler):
                 if memcache_response is not None:
                     self.content = memcache_response
                 else:
-                    if 'transactionType' in self.context['request_args'] and self.context['request_args']['transactionType'] != '':
-                        transaction_type = self.context['request_args']['transactionType']
-                    
-                    payload = '<EXPERIAN><ESERIES><FORM_ID>B2INT</FORM_ID></ESERIES><MXIN><TRANSACTIONTYPE>'+transaction_type+'</TRANSACTIONTYPE><PAYMENTCOLLECTIONTYPE>02</PAYMENTCOLLECTIONTYPE><USERNAME>'+self.experian_config['username']+'</USERNAME><PASSWORD>'+self.experian_config['password']+'</PASSWORD><VRM>'+self.context['request_args']['vrm']+'</VRM></MXIN></EXPERIAN>'
-                    
-                    response = urlfetch.fetch(
-                        url=self.experian_config['url'],
-                        method='POST',
-                        payload=payload,
-                        deadline=30,
-                        headers=self.urlfetch['headers']
-                    )
-                    if response.status_code == 200:
-                        
-                        # Create a Vehicle dictionary                        
-                        json_response = dict()
 
-                        # Add the request args back into the response object
-                        json_response['request_args'] = self.context['request_args']
-                        json_response['product_packaging'] = self.product_packaging
-                        json_response['unit_of_measurement'] = self.unit_of_measurement
-
-                        json_vehicle_data = self.create_json_response(response.content)
-                        if json_vehicle_data is None:
-                        	raise Exception('Unable to parse DVLA vehicle data')
-                        
-                        logging.info(json_vehicle_data)
-
-                        # Add the DVLA vehicle data or error
-                        json_response['dvla'] = json_vehicle_data
-                        
-                        # Get Make
-                        make = None
-                        if json_vehicle_data.get('MAKE') is not None:
-                            make = json_vehicle_data.get('MAKE').lower()
-                            make = make.title()
-                            logging.info(make)
-                        
-                        # Get Model
-                        model = None
-                        if json_vehicle_data.get('MODEL') is not None:
-                            model = json_vehicle_data.get('MODEL').lower()
-                            model = model.title()
-                            # Now select the first word of the model, as we will use this to match our Datastore models
-                            model = model.split(' ')[0]
-                            logging.info(model)
-
-                        # Get Year Of Manufacture
-                        year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
-                        logging.info(year_of_manufacture)
-
-                        # Get Door Plan Literal
-                        door_plan_literal = ''
-                        door_plan_literal_string = None
-                        if json_vehicle_data.get('DOORPLANLITERAL') is not None:
-                            door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
-                        
-                        if door_plan_literal_string is not None:
-                            door_plan_literal_string = door_plan_literal_string.lower()
-                            door_plan_literal_string = door_plan_literal_string.title()
-
-                        if door_plan_literal_string in models.dvla_door_plan_literal_inv:
-                            door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
-
-                        logging.info(door_plan_literal)
-
-                        # Query the DB for the Vehicle
-                        try:
-                            query = datastore.get_vehicle(**dict(
-                                make=make,
-                                model=model,
-                                door_plan_literal=door_plan_literal,
-                                year_of_manufacture=year_of_manufacture
-                            ))
-
-                            
-                            # Add the DB Query data
-                            json_response['datastore'] = query
-                            if query is not None:
-                                json_response['datastore']['door_plan_literal_string'] = door_plan_literal_string
-                                # Calculate the Product fit and add this to the JSON response object
-                                product_fit_score = self.calculate_vehicle_fit(query, self.context['request_args'])
-                                json_response['score'] = product_fit_score
-
-                            # Cache for longevity
-                            memcache.set(memcache_key, json_response)
-                        except Exception, e:
-                            # Add the DB Query error
-                            json_response['datastore'] = str(e)
-                            # Cache for a short period
-                            memcache.set(memcache_key, json_response, time=8000)        
-
-                        # Set the response context data
-                        self.content = dict(data=json_response)
-                        logging.info(json_response)
-
+                    memcache_vrm_key = 'vrm:'+self.context['request_args']['vrm']
+                    memcache_vrm_response = memcache.get(memcache_vrm_key)
+                    if memcache_vrm_response is not None:
+                        dvla_data = memcache_vrm_response
+                        logging.info('Getting VRM Cara Data from Memcache')
                     else:
-                        raise Exception('Bad Experian Response')
+
+                        if 'transactionType' in self.context['request_args'] and self.context['request_args']['transactionType'] != '':
+                            transaction_type = self.context['request_args']['transactionType']
+                    
+                        payload = '<EXPERIAN><ESERIES><FORM_ID>B2INT</FORM_ID></ESERIES><MXIN><TRANSACTIONTYPE>'+transaction_type+'</TRANSACTIONTYPE><PAYMENTCOLLECTIONTYPE>02</PAYMENTCOLLECTIONTYPE><USERNAME>'+self.experian_config['username']+'</USERNAME><PASSWORD>'+self.experian_config['password']+'</PASSWORD><VRM>'+self.context['request_args']['vrm']+'</VRM></MXIN></EXPERIAN>'
+                    
+                        response = urlfetch.fetch(
+                            url=self.experian_config['url'],
+                            method='POST',
+                            payload=payload,
+                            deadline=30,
+                            headers=self.urlfetch['headers']
+                        )
+                        if response.status_code == 200:
+                            dvla_data = response.content
+                            memcache.set(memcache_vrm_key, value=dvla_data)
+                            logging.info('Getting VRM Cara Data from DVLA')
+                        else:
+                            raise Exception('Bad Experian Response')
+
+                    # Then...
+
+                    # Create a Vehicle dictionary                        
+                    json_response = dict()
+
+                    # Add the request args back into the response object
+                    json_response['request_args'] = self.context['request_args']
+                    json_response['product_packaging'] = self.product_packaging
+                    json_response['unit_of_measurement'] = self.unit_of_measurement
+
+                    json_vehicle_data = self.create_json_response(dvla_data)
+                    if json_vehicle_data is None:
+                    	raise Exception('Unable to parse DVLA vehicle data')
+                    
+                    logging.info(json_vehicle_data)
+
+                    # Add the DVLA vehicle data or error
+                    json_response['dvla'] = json_vehicle_data
+                    
+                    # Get Make
+                    make = None
+                    if json_vehicle_data.get('MAKE') is not None:
+                        make = json_vehicle_data.get('MAKE').lower()
+                        make = make.title()
+                        logging.info(make)
+                    
+                    # Get Model
+                    model = None
+                    if json_vehicle_data.get('MODEL') is not None:
+                        model = json_vehicle_data.get('MODEL').lower()
+                        model = model.title()
+                        # Now select the first word of the model, as we will use this to match our Datastore models
+                        model = model.split(' ')[0]
+                        logging.info(model)
+
+                    # Get Year Of Manufacture
+                    year_of_manufacture = json_vehicle_data.get('YEAROFMANUFACTURE')
+                    logging.info(year_of_manufacture)
+
+                    # Get Door Plan Literal
+                    door_plan_literal = ''
+                    door_plan_literal_string = None
+                    if json_vehicle_data.get('DOORPLANLITERAL') is not None:
+                        door_plan_literal_string = json_vehicle_data.get('DOORPLANLITERAL')
+                    
+                    if door_plan_literal_string is not None:
+                        door_plan_literal_string = door_plan_literal_string.lower()
+                        door_plan_literal_string = door_plan_literal_string.title()
+
+                    if door_plan_literal_string in models.dvla_door_plan_literal_inv:
+                        door_plan_literal = models.dvla_door_plan_literal_inv.get(door_plan_literal_string)
+
+                    logging.info(door_plan_literal)
+
+                    # Query the DB for the Vehicle
+                    try:
+                        query = datastore.get_vehicle(**dict(
+                            make=make,
+                            model=model,
+                            door_plan_literal=door_plan_literal,
+                            year_of_manufacture=year_of_manufacture
+                        ))
+
+                        
+                        # Add the DB Query data
+                        json_response['datastore'] = query
+                        if query is not None:
+                            json_response['datastore']['door_plan_literal_string'] = door_plan_literal_string
+                            # Calculate the Product fit and add this to the JSON response object
+                            product_fit_score = self.calculate_vehicle_fit(query, self.context['request_args'])
+                            json_response['score'] = product_fit_score
+
+                        # Cache for longevity
+                        memcache.set(memcache_key, json_response)
+                    except Exception, e:
+                        # Add the DB Query error
+                        json_response['datastore'] = str(e)
+                        # Cache for a short period
+                        memcache.set(memcache_key, json_response, time=8000)        
+
+                    # Set the response context data
+                    self.content = dict(data=json_response)
+                    logging.info(json_response)
+
+                    
             else:
                 raise Exception('VRM parameter value missing')
                 
