@@ -67,7 +67,7 @@ class MainHandler(utils.BaseHandler):
                         )
                         if response.status_code == 200:
                             dvla_data = response.content
-                            memcache.set(memcache_vrm_key, value=dvla_data)
+                            memcache.set(memcache_vrm_key, value=dvla_data, time=1*60*60*24)
                             logging.info('Getting VRM Cara Data from DVLA')
                         else:
                             raise Exception('Bad Experian Response')
