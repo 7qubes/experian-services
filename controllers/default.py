@@ -68,8 +68,9 @@ class MainHandler(utils.BaseHandler):
                         if response.status_code == 200:
                             dvla_data = response.content
                             memcache.set(memcache_vrm_key, value=dvla_data, time=1*60*60*24)
-                            logging.info('Getting VRM Cara Data from DVLA')
+                            logging.info('Getting VRM Car Data from DVLA')
                         else:
+                            logging.exception(response.content)
                             raise Exception('Bad Experian Response')
 
                     # Then...
@@ -164,8 +165,8 @@ class MainHandler(utils.BaseHandler):
             logging.exception(e)
             self.set_response_error(e.message, 500)
         finally:
-            self.functionName = self.request.get(self.jsonp_request_arg)
-            if self.functionName is not None and self.functionName != '':
+            self.function_name = self.request.get(self.jsonp_request_arg)
+            if self.function_name is not None and self.function_name != '':
                 self.render_jsonp()
             else:
                 self.render_json()

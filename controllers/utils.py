@@ -35,7 +35,7 @@ class BaseHandler(webapp2.RequestHandler):
 		)
 
 		self.experian_config = dict(
-			url='https://www.AutomotiveMXIN.com/',
+			url='https://www.AutomotiveMXIN.com/UAT/',
 			username='AUTOMXINUATF1006',
     		password='CKEWYN9C',
     		transaction_type='03'
@@ -86,8 +86,8 @@ class BaseHandler(webapp2.RequestHandler):
 		self.response.out.write(self.data_output)
 		return
 	def render_jsonp(self):
-		self.functionName = self.request.get(self.jsonp_request_arg)
-		self.data_output = self.functionName+'('+json.dumps(self.content)+');'
+		self.function_name = self.request.get(self.jsonp_request_arg)
+		self.data_output = self.function_name+'('+json.dumps(self.content)+');'
 		if self.status_code is not None:
 			self.response.set_status(self.status_code)
 		else:
