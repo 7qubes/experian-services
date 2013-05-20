@@ -26,6 +26,3 @@ LA52ATU
 LA52AUH
 LA52AUN
 LA52USP
- 
-
- <base href="http://phoenix-homebase.appspot.com" />

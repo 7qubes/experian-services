@@ -35,7 +35,7 @@ class BaseHandler(webapp2.RequestHandler):
 		)
 
 		self.experian_config = dict(
-			url='https://www.AutomotiveMXIN.com/UAT/',
+			url='https://www.AutomotiveMXIN.com/',
 			username='AUTOMXINUATF1006',
     		password='CKEWYN9C',
     		transaction_type='03'
